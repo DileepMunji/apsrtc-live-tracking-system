@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 
 function Home() {
     const navigate = useNavigate();
@@ -10,7 +10,7 @@ function Home() {
     useEffect(() => {
         const checkServer = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/test');
+                const res = await api.get('/api/test');
                 setApiData(res.data);
                 setServerStatus('online');
             } catch (error) {
