@@ -4,6 +4,7 @@ import cors from 'cors';
 import connectDB from './config/db.js';
 import mongoose from 'mongoose';
 import authRoutes from './routes/auth.js';
+import busRoutes from './routes/busRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -21,6 +22,7 @@ connectDB();
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/bus', busRoutes);
 
 // Test Route
 app.get('/api/test', (req, res) => {
