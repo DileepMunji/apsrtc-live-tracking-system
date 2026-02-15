@@ -7,6 +7,7 @@ function Home() {
     const [serverStatus, setServerStatus] = useState('checking'); // checking, online, offline
     const [apiData, setApiData] = useState(null);
     const [routeType, setRouteType] = useState('express'); // 'city' or 'express'
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [searchData, setSearchData] = useState({
         from: '',
         to: '',
@@ -61,6 +62,7 @@ function Home() {
                         </div>
                     </div>
 
+                    {/* Desktop Nav */}
                     <nav className="hidden md:flex items-center gap-8">
                         <a href="#" className="font-medium text-slate-700 hover:text-orange-600 transition-colors">Home</a>
                         <a href="#" className="font-medium text-slate-700 hover:text-orange-600 transition-colors">e-Ticket</a>
@@ -70,24 +72,68 @@ function Home() {
 
                     <div className="flex items-center gap-4">
                         {/* Connection Status Indicator */}
-                        <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border ${serverStatus === 'online' ? 'bg-green-50 border-green-100 text-green-600' : 'bg-red-50 border-red-100 text-red-600'}`}>
+                        <div className={`hidden sm:flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border ${serverStatus === 'online' ? 'bg-green-50 border-green-100 text-green-600' : 'bg-red-50 border-red-100 text-red-600'}`}>
                             <span className={`w-2 h-2 rounded-full ${serverStatus === 'online' ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></span>
                             {serverStatus === 'online' ? 'System Live' : 'Backend Offline'}
                         </div>
+
+                        {/* Desktop Buttons */}
+                        <div className="hidden md:flex items-center gap-3">
+                            <button
+                                onClick={() => navigate('/login')}
+                                className="px-5 py-2 rounded-lg bg-white border-2 border-slate-900 text-slate-900 font-medium hover:bg-slate-900 hover:text-white transition-colors"
+                            >
+                                Driver Login
+                            </button>
+                            <button
+                                onClick={() => navigate('/register')}
+                                className="px-5 py-2 rounded-lg bg-slate-900 text-white font-medium hover:bg-slate-800 transition-colors"
+                            >
+                                Register
+                            </button>
+                        </div>
+
+                        {/* Mobile Menu Button */}
                         <button
-                            onClick={() => navigate('/login')}
-                            className="hidden md:block px-5 py-2 rounded-lg bg-white border-2 border-slate-900 text-slate-900 font-medium hover:bg-slate-900 hover:text-white transition-colors"
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            className="md:hidden p-2 rounded-lg hover:bg-slate-100 transition-colors"
                         >
-                            Driver Login
-                        </button>
-                        <button
-                            onClick={() => navigate('/register')}
-                            className="hidden md:block px-5 py-2 rounded-lg bg-slate-900 text-white font-medium hover:bg-slate-800 transition-colors"
-                        >
-                            Driver Register
+                            {isMobileMenuOpen ? (
+                                <svg className="w-6 h-6 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                            ) : (
+                                <svg className="w-6 h-6 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
+                            )}
                         </button>
                     </div>
                 </div>
+
+                {/* Mobile Menu */}
+                {isMobileMenuOpen && (
+                    <div className="md:hidden bg-white border-t border-slate-100 shadow-lg absolute w-full left-0 top-20 animate-fade-in-down">
+                        <div className="p-4 space-y-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <a href="#" className="flex items-center justify-center px-4 py-3 rounded-xl bg-slate-50 text-slate-700 font-medium hover:bg-orange-50 hover:text-orange-600 transition-colors">Home</a>
+                                <a href="#" className="flex items-center justify-center px-4 py-3 rounded-xl bg-slate-50 text-slate-700 font-medium hover:bg-orange-50 hover:text-orange-600 transition-colors">e-Ticket</a>
+                                <a href="#" className="flex items-center justify-center px-4 py-3 rounded-xl bg-slate-50 text-slate-700 font-medium hover:bg-orange-50 hover:text-orange-600 transition-colors">Status</a>
+                                <a href="#" className="flex items-center justify-center px-4 py-3 rounded-xl bg-slate-50 text-slate-700 font-medium hover:bg-orange-50 hover:text-orange-600 transition-colors">Gallery</a>
+                            </div>
+                            <div className="pt-4 border-t border-slate-100 flex flex-col gap-3">
+                                <button
+                                    onClick={() => navigate('/login')}
+                                    className="w-full px-5 py-3 rounded-xl bg-white border-2 border-slate-900 text-slate-900 font-bold hover:bg-slate-900 hover:text-white transition-colors"
+                                >
+                                    Driver Login
+                                </button>
+                                <button
+                                    onClick={() => navigate('/register')}
+                                    className="w-full px-5 py-3 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition-colors shadow-lg shadow-slate-900/20"
+                                >
+                                    Driver Registration
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </header>
 
             {/* 2. Hero Section with Search Widget */}
