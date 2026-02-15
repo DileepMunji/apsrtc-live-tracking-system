@@ -75,6 +75,12 @@ function Home() {
                             {serverStatus === 'online' ? 'System Live' : 'Backend Offline'}
                         </div>
                         <button
+                            onClick={() => navigate('/login')}
+                            className="hidden md:block px-5 py-2 rounded-lg bg-white border-2 border-slate-900 text-slate-900 font-medium hover:bg-slate-900 hover:text-white transition-colors"
+                        >
+                            Driver Login
+                        </button>
+                        <button
                             onClick={() => navigate('/register')}
                             className="hidden md:block px-5 py-2 rounded-lg bg-slate-900 text-white font-medium hover:bg-slate-800 transition-colors"
                         >
@@ -107,8 +113,8 @@ function Home() {
                             <button
                                 onClick={() => handleRouteTypeChange('city')}
                                 className={`flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-lg transition-all ${routeType === 'city'
-                                        ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30'
-                                        : 'bg-white text-slate-600 border-2 border-slate-200 hover:border-blue-300'
+                                    ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30'
+                                    : 'bg-white text-slate-600 border-2 border-slate-200 hover:border-blue-300'
                                     }`}
                             >
                                 <span className="text-2xl">🚌</span>
@@ -117,8 +123,8 @@ function Home() {
                             <button
                                 onClick={() => handleRouteTypeChange('express')}
                                 className={`flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-lg transition-all ${routeType === 'express'
-                                        ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
-                                        : 'bg-white text-slate-600 border-2 border-slate-200 hover:border-orange-300'
+                                    ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
+                                    : 'bg-white text-slate-600 border-2 border-slate-200 hover:border-orange-300'
                                     }`}
                             >
                                 <span className="text-2xl">🚍</span>
