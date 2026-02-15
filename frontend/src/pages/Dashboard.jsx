@@ -1,15 +1,20 @@
 import { useAuth } from '../context/AuthContext';
+import { useSocket } from '../context/SocketContext';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 
 function Dashboard() {
     const { user, logout } = useAuth();
+    const { socket, connected } = useSocket();
     const navigate = useNavigate();
     const [busStatus, setBusStatus] = useState(null);
     const [loading, setLoading] = useState(true);
     const [actionLoading, setActionLoading] = useState(false);
+    const [locationTracking, setLocationTracking] = useState(false);
+    const watchIdRef = useRef(null);
+    const locationIntervalRef = useRef(null);
 
     // Form state
     const [busNumber, setBusNumber] = useState(user?.busNumber || '');
@@ -20,6 +25,81 @@ function Dashboard() {
     useEffect(() => {
         checkBusStatus();
     }, []);
+
+    // Start/stop location tracking based on bus status
+    useEffect(() => {
+        if (busStatus && socket && connected) {
+            startLocationTracking();
+        } else {
+            stopLocationTracking();
+        }
+
+        return () => stopLocationTracking();
+    }, [busStatus, socket, connected]);
+
+    const startLocationTracking = () => {
+        if (!navigator.geolocation) {
+            toast.error('Geolocation is not supported by your browser');
+            return;
+        }
+
+        setLocationTracking(true);
+
+        // Join bus room
+        if (socket && busStatus?.id) {
+            socket.emit('joinBus', busStatus.id);
+        }
+
+        // Watch position with high accuracy
+        watchIdRef.current = navigator.geolocation.watchPosition(
+            (position) => {
+                const { latitude, longitude, heading, speed } = position.coords;
+
+                // Send location update via socket
+                if (socket && busStatus?.id) {
+                    socket.emit('updateLocation', {
+                        busId: busStatus.id,
+                        lat: latitude,
+                        lng: longitude,
+                        heading: heading || 0,
+                        speed: speed || 0
+                    });
+                }
+            },
+            (error) => {
+                console.error('Geolocation error:', error);
+                if (error.code === error.PERMISSION_DENIED) {
+                    toast.error('Location permission denied. Please enable location access.');
+                }
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+            }
+        );
+    };
+
+    const stopLocationTracking = () => {
+        setLocationTracking(false);
+
+        // Leave bus room
+        if (socket && busStatus?.id) {
+            socket.emit('leaveBus', busStatus.id);
+        }
+
+        // Clear watch position
+        if (watchIdRef.current !== null) {
+            navigator.geolocation.clearWatch(watchIdRef.current);
+            watchIdRef.current = null;
+        }
+
+        // Clear interval
+        if (locationIntervalRef.current) {
+            clearInterval(locationIntervalRef.current);
+            locationIntervalRef.current = null;
+        }
+    };
 
     const checkBusStatus = async () => {
         try {
@@ -205,6 +285,18 @@ function Dashboard() {
                                         </div>
                                         <span className="text-sm font-bold text-green-600">{getServiceDuration()}</span>
                                     </div>
+
+                                    {/* GPS Tracking Indicator */}
+                                    {locationTracking && connected && (
+                                        <div className="mb-4 flex items-center gap-2 text-sm">
+                                            <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg">
+                                                <svg className="w-4 h-4 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                                                </svg>
+                                                <span className="font-bold">GPS Tracking Active</span>
+                                            </div>
+                                        </div>
+                                    )}
 
                                     <div className="space-y-3">
                                         <div>

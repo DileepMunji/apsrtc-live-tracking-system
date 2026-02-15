@@ -1,16 +1,31 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 import connectDB from './config/db.js';
 import mongoose from 'mongoose';
 import authRoutes from './routes/auth.js';
 import busRoutes from './routes/busRoutes.js';
+import { initializeSocket } from './socket/socket.js';
 
 // Load environment variables
 dotenv.config();
 
 // Initialize Express app
 const app = express();
+const httpServer = createServer(app);
+
+// Initialize Socket.io
+const io = new Server(httpServer, {
+    cors: {
+        origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+        methods: ['GET', 'POST']
+    }
+});
+
+// Initialize socket handlers
+initializeSocket(io);
 
 // Middleware
 app.use(cors());
@@ -49,8 +64,9 @@ app.get('/', (req, res) => {
 
 // Start Server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
     console.log(`🌐 API URL: http://localhost:${PORT}`);
     console.log(`🧪 Test endpoint: http://localhost:${PORT}/api/test`);
+    console.log(`🔌 Socket.io ready for connections`);
 });

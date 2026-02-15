@@ -65,6 +65,16 @@ function Home() {
                     {/* Desktop Nav */}
                     <nav className="hidden md:flex items-center gap-8">
                         <a href="#" className="font-medium text-slate-700 hover:text-orange-600 transition-colors">Home</a>
+                        <button
+                            onClick={() => navigate('/track')}
+                            className="font-medium text-slate-700 hover:text-orange-600 transition-colors flex items-center gap-2"
+                        >
+                            <span className="relative flex h-3 w-3">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                            </span>
+                            Live Track
+                        </button>
                         <a href="#" className="font-medium text-slate-700 hover:text-orange-600 transition-colors">e-Ticket</a>
                         <a href="#" className="font-medium text-slate-700 hover:text-orange-600 transition-colors">Bus Status</a>
                         <a href="#" className="font-medium text-slate-700 hover:text-orange-600 transition-colors">Gallery</a>
@@ -113,6 +123,13 @@ function Home() {
                         <div className="p-4 space-y-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <a href="#" className="flex items-center justify-center px-4 py-3 rounded-xl bg-slate-50 text-slate-700 font-medium hover:bg-orange-50 hover:text-orange-600 transition-colors">Home</a>
+                                <button onClick={() => navigate('/track')} className="flex items-center justify-center px-4 py-3 rounded-xl bg-red-50 text-red-600 font-bold hover:bg-red-100 transition-colors gap-2">
+                                    <span className="relative flex h-2 w-2">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                                    </span>
+                                    Live Track
+                                </button>
                                 <a href="#" className="flex items-center justify-center px-4 py-3 rounded-xl bg-slate-50 text-slate-700 font-medium hover:bg-orange-50 hover:text-orange-600 transition-colors">e-Ticket</a>
                                 <a href="#" className="flex items-center justify-center px-4 py-3 rounded-xl bg-slate-50 text-slate-700 font-medium hover:bg-orange-50 hover:text-orange-600 transition-colors">Status</a>
                                 <a href="#" className="flex items-center justify-center px-4 py-3 rounded-xl bg-slate-50 text-slate-700 font-medium hover:bg-orange-50 hover:text-orange-600 transition-colors">Gallery</a>

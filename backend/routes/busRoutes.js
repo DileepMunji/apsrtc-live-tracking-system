@@ -176,4 +176,44 @@ router.get('/status', protect, async (req, res) => {
     }
 });
 
+// @route   GET /api/bus/active
+// @desc    Get all active buses with location
+// @access  Public
+router.get('/active', async (req, res) => {
+    try {
+        const activeBuses = await Bus.find({
+            status: 'active',
+            'currentLocation.lat': { $ne: null },
+            'currentLocation.lng': { $ne: null }
+        }).select('busNumber routeType routeNumber sourceCity destinationCity currentLocation heading speed');
+
+        const buses = activeBuses.map(bus => ({
+            id: bus._id,
+            busNumber: bus.busNumber,
+            routeType: bus.routeType,
+            routeNumber: bus.routeNumber,
+            sourceCity: bus.sourceCity,
+            destinationCity: bus.destinationCity,
+            lat: bus.currentLocation.lat,
+            lng: bus.currentLocation.lng,
+            heading: bus.heading || 0,
+            speed: bus.speed || 0
+        }));
+
+        res.status(200).json({
+            success: true,
+            count: buses.length,
+            buses
+        });
+
+    } catch (error) {
+        console.error('Get active buses error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error. Please try again later.'
+        });
+    }
+});
+
 export default router;
+
