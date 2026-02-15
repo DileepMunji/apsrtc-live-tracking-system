@@ -12,7 +12,10 @@ function Register() {
         password: '',
         confirmPassword: '',
         licenseNumber: '',
-        busNumber: ''
+        busNumber: '',
+        routeType: 'both',
+        homeCity: '',
+        operatingCities: []
     });
     const [loading, setLoading] = useState(false);
 
@@ -21,6 +24,15 @@ function Register() {
             ...formData,
             [e.target.name]: e.target.value
         });
+    };
+
+    const handleCityToggle = (city) => {
+        setFormData(prev => ({
+            ...prev,
+            operatingCities: prev.operatingCities.includes(city)
+                ? prev.operatingCities.filter(c => c !== city)
+                : [...prev.operatingCities, city]
+        }));
     };
 
     const handleSubmit = async (e) => {
@@ -46,7 +58,10 @@ function Register() {
                 phone: formData.phone,
                 password: formData.password,
                 licenseNumber: formData.licenseNumber,
-                busNumber: formData.busNumber || null
+                busNumber: formData.busNumber || null,
+                routeType: formData.routeType,
+                homeCity: formData.homeCity || null,
+                operatingCities: formData.operatingCities
             });
 
             toast.success(response.data.message);
@@ -59,7 +74,10 @@ function Register() {
                 password: '',
                 confirmPassword: '',
                 licenseNumber: '',
-                busNumber: ''
+                busNumber: '',
+                routeType: 'both',
+                homeCity: '',
+                operatingCities: []
             });
 
             // Redirect to home after 2 seconds
@@ -178,6 +196,92 @@ function Register() {
                                 Bus Number (Optional)
                             </label>
                         </div>
+
+                        {/* Route Type Selection */}
+                        <div className="space-y-3">
+                            <label className="block text-sm font-bold text-slate-700 uppercase tracking-wider">Route Type</label>
+                            <div className="grid grid-cols-3 gap-3">
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, routeType: 'city', operatingCities: [] })}
+                                    className={`px-4 py-3 rounded-xl font-bold text-sm transition-all ${formData.routeType === 'city'
+                                            ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30'
+                                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                        }`}
+                                >
+                                    🚌 City
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, routeType: 'express', homeCity: '' })}
+                                    className={`px-4 py-3 rounded-xl font-bold text-sm transition-all ${formData.routeType === 'express'
+                                            ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
+                                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                        }`}
+                                >
+                                    🚍 Express
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, routeType: 'both' })}
+                                    className={`px-4 py-3 rounded-xl font-bold text-sm transition-all ${formData.routeType === 'both'
+                                            ? 'bg-gradient-to-r from-blue-500 to-orange-500 text-white shadow-lg'
+                                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                        }`}
+                                >
+                                    Both
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Conditional Fields Based on Route Type */}
+                        {(formData.routeType === 'city' || formData.routeType === 'both') && (
+                            <div className="relative">
+                                <select
+                                    name="homeCity"
+                                    value={formData.homeCity}
+                                    onChange={handleChange}
+                                    required={formData.routeType === 'city'}
+                                    className="peer w-full px-4 pt-6 pb-2 rounded-xl border-2 border-slate-200 bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/50 outline-none transition-all text-slate-800 font-medium"
+                                >
+                                    <option value="">Select Home City</option>
+                                    <option value="Visakhapatnam">Visakhapatnam</option>
+                                    <option value="Vijayawada">Vijayawada</option>
+                                    <option value="Guntur">Guntur</option>
+                                    <option value="Tirupati">Tirupati</option>
+                                    <option value="Kakinada">Kakinada</option>
+                                    <option value="Rajahmundry">Rajahmundry</option>
+                                    <option value="Nellore">Nellore</option>
+                                    <option value="Kurnool">Kurnool</option>
+                                </select>
+                                <label className="absolute left-4 top-2 text-xs font-bold text-blue-600 uppercase tracking-wider">
+                                    Home City {formData.routeType === 'city' && '*'}
+                                </label>
+                            </div>
+                        )}
+
+                        {(formData.routeType === 'express' || formData.routeType === 'both') && (
+                            <div className="space-y-2">
+                                <label className="block text-xs font-bold text-orange-600 uppercase tracking-wider">
+                                    Operating Cities {formData.routeType === 'express' && '(Select Multiple)'}
+                                </label>
+                                <div className="grid grid-cols-2 gap-2">
+                                    {['Visakhapatnam', 'Vijayawada', 'Guntur', 'Tirupati', 'Kakinada', 'Rajahmundry', 'Nellore', 'Kurnool'].map(city => (
+                                        <button
+                                            key={city}
+                                            type="button"
+                                            onClick={() => handleCityToggle(city)}
+                                            className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${formData.operatingCities.includes(city)
+                                                    ? 'bg-orange-500 text-white shadow-md'
+                                                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                                }`}
+                                        >
+                                            {city}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
 
                         {/* Password Field */}
                         <div className="relative">

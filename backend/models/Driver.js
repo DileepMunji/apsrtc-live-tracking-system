@@ -39,6 +39,21 @@ const driverSchema = new mongoose.Schema({
         trim: true,
         uppercase: true
     },
+    routeType: {
+        type: String,
+        enum: ['city', 'express', 'both'],
+        default: 'both',
+        required: true
+    },
+    homeCity: {
+        type: String,
+        trim: true,
+        default: null
+    },
+    operatingCities: {
+        type: [String],
+        default: []
+    },
     isActive: {
         type: Boolean,
         default: false

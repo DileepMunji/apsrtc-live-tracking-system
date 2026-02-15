@@ -6,6 +6,31 @@ function Home() {
     const navigate = useNavigate();
     const [serverStatus, setServerStatus] = useState('checking'); // checking, online, offline
     const [apiData, setApiData] = useState(null);
+    const [routeType, setRouteType] = useState('express'); // 'city' or 'express'
+    const [searchData, setSearchData] = useState({
+        from: '',
+        to: '',
+        date: '',
+        city: ''
+    });
+
+    // Clear search data when route type changes
+    const handleRouteTypeChange = (type) => {
+        setRouteType(type);
+        setSearchData({
+            from: '',
+            to: '',
+            date: '',
+            city: ''
+        });
+    };
+
+    const handleSearchChange = (e) => {
+        setSearchData({
+            ...searchData,
+            [e.target.name]: e.target.value
+        });
+    };
 
     useEffect(() => {
         const checkServer = async () => {
@@ -72,41 +97,147 @@ function Home() {
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-600">APSRTC Live Track</span>
                         </h1>
                         <p className="text-lg text-slate-600 mb-8">
-                            Experience the next generation of bus travel. Track your bus in real-time, get instant updates, and travel safely across Andhra Pradesh.
+                            Experience the next generation of bus travel. Track city buses and express routes in real-time across Andhra Pradesh.
                         </p>
+                    </div>
+
+                    {/* Route Type Toggle */}
+                    <div className="max-w-6xl mx-auto mb-6 animate-fade-in-up" style={{ animationDelay: '0.05s' }}>
+                        <div className="flex justify-center gap-4">
+                            <button
+                                onClick={() => handleRouteTypeChange('city')}
+                                className={`flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-lg transition-all ${routeType === 'city'
+                                        ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30'
+                                        : 'bg-white text-slate-600 border-2 border-slate-200 hover:border-blue-300'
+                                    }`}
+                            >
+                                <span className="text-2xl">🚌</span>
+                                City Bus
+                            </button>
+                            <button
+                                onClick={() => handleRouteTypeChange('express')}
+                                className={`flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-lg transition-all ${routeType === 'express'
+                                        ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
+                                        : 'bg-white text-slate-600 border-2 border-slate-200 hover:border-orange-300'
+                                    }`}
+                            >
+                                <span className="text-2xl">🚍</span>
+                                Express Bus
+                            </button>
+                        </div>
                     </div>
 
                     {/* Search/Booking Widget - WIDENED CONTAINER */}
                     <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-xl shadow-slate-200/60 p-2 md:p-4 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            <div className="relative h-full group">
-                                <span className="absolute left-5 top-1/2 -translate-y-1/2 text-orange-500 pointer-events-none group-focus-within:text-orange-600 transition-colors">
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                                </span>
-                                <input type="text" placeholder="From City" className="w-full h-16 pl-16 pr-4 rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-100/50 outline-none transition-all font-bold text-lg text-slate-700 placeholder:text-slate-400 placeholder:font-normal" />
-                            </div>
+                        {routeType === 'express' ? (
+                            // EXPRESS BUS SEARCH
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div className="relative h-full group">
+                                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-orange-500 pointer-events-none group-focus-within:text-orange-600 transition-colors">
+                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                    </span>
+                                    <input
+                                        type="text"
+                                        name="from"
+                                        value={searchData.from}
+                                        onChange={handleSearchChange}
+                                        placeholder="From City"
+                                        className="w-full h-16 pl-16 pr-4 rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-100/50 outline-none transition-all font-bold text-lg text-slate-700 placeholder:text-slate-400 placeholder:font-normal"
+                                    />
+                                </div>
 
-                            <div className="relative h-full group">
-                                <span className="absolute left-5 top-1/2 -translate-y-1/2 text-orange-500 pointer-events-none group-focus-within:text-orange-600 transition-colors">
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                                </span>
-                                <input type="text" placeholder="To City" className="w-full h-16 pl-16 pr-4 rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-100/50 outline-none transition-all font-bold text-lg text-slate-700 placeholder:text-slate-400 placeholder:font-normal" />
-                            </div>
+                                <div className="relative h-full group">
+                                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-orange-500 pointer-events-none group-focus-within:text-orange-600 transition-colors">
+                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                    </span>
+                                    <input
+                                        type="text"
+                                        name="to"
+                                        value={searchData.to}
+                                        onChange={handleSearchChange}
+                                        placeholder="To City"
+                                        className="w-full h-16 pl-16 pr-4 rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-100/50 outline-none transition-all font-bold text-lg text-slate-700 placeholder:text-slate-400 placeholder:font-normal"
+                                    />
+                                </div>
 
-                            <div className="relative h-full group">
-                                <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none group-focus-within:text-orange-500 transition-colors">
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                                </span>
-                                <input type="date" className="w-full h-16 pl-16 pr-4 rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-100/50 outline-none transition-all font-bold text-lg text-slate-700 cursor-pointer placeholder:text-slate-400" />
-                            </div>
+                                <div className="relative h-full group">
+                                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none group-focus-within:text-orange-500 transition-colors">
+                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                    </span>
+                                    <input
+                                        type="date"
+                                        name="date"
+                                        value={searchData.date}
+                                        onChange={handleSearchChange}
+                                        className="w-full h-16 pl-16 pr-4 rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-100/50 outline-none transition-all font-bold text-lg text-slate-700 cursor-pointer placeholder:text-slate-400"
+                                    />
+                                </div>
 
-                            <div>
-                                <button className="w-full h-16 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:-translate-y-0.5 flex items-center justify-center gap-2 text-xl tracking-wide">
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-                                    SEARCH
-                                </button>
+                                <div>
+                                    <button className="w-full h-16 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:-translate-y-0.5 flex items-center justify-center gap-2 text-xl tracking-wide">
+                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                                        SEARCH
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        ) : (
+                            // CITY BUS SEARCH
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div className="relative h-full group">
+                                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-blue-500 pointer-events-none group-focus-within:text-blue-600 transition-colors">
+                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+                                    </span>
+                                    <select
+                                        name="city"
+                                        value={searchData.city}
+                                        onChange={handleSearchChange}
+                                        className="w-full h-16 pl-16 pr-4 rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/50 outline-none transition-all font-bold text-lg text-slate-700 cursor-pointer"
+                                    >
+                                        <option value="">Select City</option>
+                                        <option value="visakhapatnam">Visakhapatnam</option>
+                                        <option value="vijayawada">Vijayawada</option>
+                                        <option value="guntur">Guntur</option>
+                                        <option value="tirupati">Tirupati</option>
+                                        <option value="kakinada">Kakinada</option>
+                                    </select>
+                                </div>
+
+                                <div className="relative h-full group">
+                                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-blue-500 pointer-events-none group-focus-within:text-blue-600 transition-colors">
+                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                    </span>
+                                    <input
+                                        type="text"
+                                        name="from"
+                                        value={searchData.from}
+                                        onChange={handleSearchChange}
+                                        placeholder="From Location"
+                                        className="w-full h-16 pl-16 pr-4 rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/50 outline-none transition-all font-bold text-lg text-slate-700 placeholder:text-slate-400 placeholder:font-normal"
+                                    />
+                                </div>
+
+                                <div className="relative h-full group">
+                                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-blue-500 pointer-events-none group-focus-within:text-blue-600 transition-colors">
+                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                    </span>
+                                    <input
+                                        type="text"
+                                        name="to"
+                                        value={searchData.to}
+                                        onChange={handleSearchChange}
+                                        placeholder="To Location"
+                                        className="w-full h-16 pl-16 pr-4 rounded-xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100/50 outline-none transition-all font-bold text-lg text-slate-700 placeholder:text-slate-400 placeholder:font-normal"
+                                    />
+                                </div>
+
+                                <div>
+                                    <button className="w-full h-16 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5 flex items-center justify-center gap-2 text-xl tracking-wide">
+                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                                        SEARCH
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 

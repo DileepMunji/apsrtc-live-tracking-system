@@ -8,7 +8,7 @@ const router = express.Router();
 // @access  Public
 router.post('/register', async (req, res) => {
     try {
-        const { name, email, phone, password, licenseNumber, busNumber } = req.body;
+        const { name, email, phone, password, licenseNumber, busNumber, routeType, homeCity, operatingCities } = req.body;
 
         // Validation
         if (!name || !email || !phone || !password || !licenseNumber) {
@@ -45,7 +45,10 @@ router.post('/register', async (req, res) => {
             phone,
             password,
             licenseNumber,
-            busNumber: busNumber || null
+            busNumber: busNumber || null,
+            routeType: routeType || 'both',
+            homeCity: homeCity || null,
+            operatingCities: operatingCities || []
         });
 
         await driver.save();
