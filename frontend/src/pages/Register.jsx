@@ -205,8 +205,8 @@ function Register() {
                                     type="button"
                                     onClick={() => setFormData({ ...formData, routeType: 'city', operatingCities: [] })}
                                     className={`px-4 py-3 rounded-xl font-bold text-sm transition-all ${formData.routeType === 'city'
-                                            ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30'
-                                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                        ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30'
+                                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                                         }`}
                                 >
                                     🚌 City
@@ -215,8 +215,8 @@ function Register() {
                                     type="button"
                                     onClick={() => setFormData({ ...formData, routeType: 'express', homeCity: '' })}
                                     className={`px-4 py-3 rounded-xl font-bold text-sm transition-all ${formData.routeType === 'express'
-                                            ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
-                                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                        ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
+                                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                                         }`}
                                 >
                                     🚍 Express
@@ -225,8 +225,8 @@ function Register() {
                                     type="button"
                                     onClick={() => setFormData({ ...formData, routeType: 'both' })}
                                     className={`px-4 py-3 rounded-xl font-bold text-sm transition-all ${formData.routeType === 'both'
-                                            ? 'bg-gradient-to-r from-blue-500 to-orange-500 text-white shadow-lg'
-                                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                        ? 'bg-gradient-to-r from-blue-500 to-orange-500 text-white shadow-lg'
+                                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                                         }`}
                                 >
                                     Both
@@ -272,8 +272,8 @@ function Register() {
                                             type="button"
                                             onClick={() => handleCityToggle(city)}
                                             className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${formData.operatingCities.includes(city)
-                                                    ? 'bg-orange-500 text-white shadow-md'
-                                                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                                ? 'bg-orange-500 text-white shadow-md'
+                                                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                                                 }`}
                                         >
                                             {city}

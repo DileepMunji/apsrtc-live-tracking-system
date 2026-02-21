@@ -25,6 +25,8 @@ export const initializeSocket = (io) => {
                     busId,
                     {
                         currentLocation: { lat, lng },
+                        heading: heading || 0,
+                        speed: speed || 0,
                         lastUpdated: new Date()
                     },
                     { new: true }

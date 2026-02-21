@@ -3,11 +3,15 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import RouteTracking from './pages/RouteTracking';
 import Home from './pages/Home';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import LiveTracking from './pages/LiveTracking';
+import BusSearch from './pages/BusSearch';
+import StopsNearMe from './pages/StopsNearMe';
+import CityBusSearch from './pages/CityBusSearch';
 import './index.css';
 
 function App() {
@@ -46,6 +50,10 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/track" element={<LiveTracking />} />
+            <Route path="/search" element={<BusSearch />} />
+            <Route path="/stops" element={<StopsNearMe />} />
+            <Route path="/city-bus" element={<CityBusSearch />} />
+            <Route path="/route-track/:routeNumber" element={<RouteTracking />} />
             <Route
               path="/dashboard"
               element={

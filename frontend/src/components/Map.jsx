@@ -23,23 +23,41 @@ const busIcon = new L.Icon({
     popupAnchor: [0, -40]
 });
 
-// Component to auto-center map on buses
-function MapController({ buses }) {
+// Custom user icon
+const userIcon = new L.Icon({
+    iconUrl: 'data:image/svg+xml;base64,' + btoa(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#3b82f6" width="48" height="48">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            <path d="M0 0h24v24H0z" fill="none"/>
+        </svg>
+    `),
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+    popupAnchor: [0, -40]
+});
+
+// Component to auto-center map
+function MapController({ buses, userLocation, focusOnUser }) {
     const map = useMap();
 
     useEffect(() => {
-        if (buses && buses.length > 0) {
+        if (focusOnUser && userLocation) {
+            map.flyTo([userLocation.lat, userLocation.lng], 15);
+        } else if (buses && buses.length > 0) {
             const bounds = L.latLngBounds(buses.map(bus => [bus.lat, bus.lng]));
+            if (userLocation) {
+                bounds.extend([userLocation.lat, userLocation.lng]);
+            }
             map.fitBounds(bounds, { padding: [50, 50] });
         }
-    }, [buses, map]);
+    }, [buses, userLocation, focusOnUser, map]);
 
     return null;
 }
 
-function Map({ buses = [], center = [17.6868, 83.2185], zoom = 13 }) {
+function Map({ buses = [], userLocation = null, focusOnUser = false, center = [17.6868, 83.2185], zoom = 13 }) {
     return (
-        <div className="w-full h-full rounded-xl overflow-hidden shadow-lg">
+        <div className="w-full h-full rounded-xl overflow-hidden shadow-lg border border-slate-200">
             <MapContainer
                 center={center}
                 zoom={zoom}
@@ -51,6 +69,21 @@ function Map({ buses = [], center = [17.6868, 83.2185], zoom = 13 }) {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
 
+                {/* User Marker */}
+                {userLocation && (
+                    <Marker
+                        position={[userLocation.lat, userLocation.lng]}
+                        icon={userIcon}
+                    >
+                        <Popup>
+                            <div className="text-center">
+                                <p className="font-bold text-lg text-blue-600">You are here</p>
+                            </div>
+                        </Popup>
+                    </Marker>
+                )}
+
+                {/* Bus Markers */}
                 {buses.map((bus) => (
                     <Marker
                         key={bus.id}
@@ -76,12 +109,20 @@ function Map({ buses = [], center = [17.6868, 83.2185], zoom = 13 }) {
                                         Speed: {Math.round(bus.speed * 3.6)} km/h
                                     </p>
                                 )}
+                                {bus.distance && (
+                                    <p className="text-xs text-blue-600 font-bold mt-1">
+                                        {bus.distance < 1 ?
+                                            `${Math.round(bus.distance * 1000)}m away` :
+                                            `${bus.distance.toFixed(1)}km away`
+                                        }
+                                    </p>
+                                )}
                             </div>
                         </Popup>
                     </Marker>
                 ))}
 
-                {buses.length > 0 && <MapController buses={buses} />}
+                <MapController buses={buses} userLocation={userLocation} focusOnUser={focusOnUser} />
             </MapContainer>
         </div>
     );
